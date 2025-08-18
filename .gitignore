@@ -1,2 +1,4 @@
 /target
 .lh
+# this is a lib!
+Cargo.lock
