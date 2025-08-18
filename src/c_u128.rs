@@ -37,6 +37,9 @@ impl<'q> Encode<'q, Postgres> for U128 {
         buf: &mut PgArgumentBuffer,
     ) -> Result<IsNull, Box<(dyn StdError + Send + Sync + 'static)>> {
         let bytes = self.value.to_be_bytes();
+        if bytes.len() != Self::get_type_size() {
+            return Err(format!("Invalid size for u128, data_len: {}, expected: {}", bytes.len(), Self::get_type_size()).into());
+        }
         <[u8; _] as Encode<Postgres>>::encode_by_ref(&bytes, buf)
     }
     fn size_hint(&self) -> usize {
@@ -47,6 +50,9 @@ impl<'q> Encode<'q, Postgres> for U128 {
 impl<'r> Decode<'r, Postgres> for U128 {
     fn decode(value: PgValueRef<'r>) -> Result<Self, sqlx::error::BoxDynError> {
         let bytes = <[u8; _] as Decode<Postgres>>::decode(value)?;
+        if bytes.len() != Self::get_type_size() {
+            return Err(format!("Invalid size for u128, data_len: {}, expected: {}", bytes.len(), Self::get_type_size()).into());
+        }
         Ok(u128::from_be_bytes(bytes).into())
     }
 }

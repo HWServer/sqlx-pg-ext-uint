@@ -36,8 +36,10 @@ impl<'q> Encode<'q, Postgres> for USize {
         &self,
         buf: &mut PgArgumentBuffer,
     ) -> Result<IsNull, Box<(dyn StdError + Send + Sync + 'static)>> {
-        // 将usize转换为大端字节序存储
         let bytes = self.value.to_be_bytes();
+        if bytes.len() != Self::get_type_size() {
+            return Err(format!("Invalid size for usize, data_len: {}, expected: {}", bytes.len(), Self::get_type_size()).into());
+        }
         <[u8; _] as Encode<Postgres>>::encode_by_ref(&bytes, buf)
     }
 
@@ -50,6 +52,9 @@ impl<'r> Decode<'r, Postgres> for USize {
     fn decode(value: PgValueRef<'r>) -> Result<Self, sqlx::error::BoxDynError> {
         // 从大端字节序解析为usize
         let bytes = <[u8; _] as Decode<Postgres>>::decode(value)?;
+        if bytes.len() != Self::get_type_size() {
+            return Err(format!("Invalid size for usize, data_len: {}, expected: {}", bytes.len(), Self::get_type_size()).into());
+        }
         Ok(usize::from_be_bytes(bytes).into())
     }
 }
