@@ -1,4 +1,8 @@
 pub mod c_u128;
+pub mod c_u16;
+pub mod c_u32;
+/// 和 usize 一个样，只是整一个兼容而已（不必 as u64
+pub mod c_u64;
 pub mod c_usize;
 
 /// test
