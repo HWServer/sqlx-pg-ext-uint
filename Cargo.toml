@@ -1,5 +1,5 @@
 [package]
-name = "pg_types_ext"
+name = "sqlx-pg-ext-uint"
 version = "0.1.0"
 edition = "2024"
 
