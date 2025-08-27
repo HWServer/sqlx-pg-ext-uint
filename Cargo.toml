@@ -7,6 +7,10 @@ authors = [
     "shenjackyuanjie <3695888@qq.com>",
 ]
 description = "A Simple Extension for SQLX to support postgres uint128"
+license = "MIT"
+repository = "https://github.com/HWSServer/sqlx-pg-ext-uint"
+homepage = "https://github.com/HWSServer/sqlx-pg-ext-uint"
+keywords = ["sqlx", "postgres", "uint128"]
 
 [dependencies]
 sqlx = { version = "0.8.6", features = ["postgres"] }
