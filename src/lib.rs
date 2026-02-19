@@ -29,28 +29,43 @@ pub mod test {
             .await
             .expect("Failed to create extension");
         // create table
-        sqlx::query("CREATE TABLE IF NOT EXISTS test (id uint16 PRIMARY KEY, name text);")
+        sqlx::query("CREATE TABLE IF NOT EXISTS test (id uint16 PRIMARY KEY, data uint16[]);")
             .execute(&pool)
             .await
             .expect("Failed to create table");
         // insert data
         // unsigned 16 bit integer
         // 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-        sqlx::query("INSERT INTO test (id, name) VALUES ($1, $2)")
-            .bind(U128::from(0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128))
-            .bind("test")
+        let id = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128;
+        let data = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128 - 1;
+        let data2 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128 - 2;
+        sqlx::query("INSERT INTO test (id, data) VALUES ($1, $2)")
+            .bind(U128::from(id))
+            .bind(vec![U128::from(data), U128::from(data2)])
             .execute(&pool)
             .await
             .expect("Failed to insert data");
 
         // select data
-        let res = sqlx::query("SELECT id, name FROM test WHERE name = $1")
-            .bind("test")
+        let res = sqlx::query("SELECT id, data FROM test WHERE id = $1")
+            .bind(U128::from(id))
             .fetch_one(&pool)
             .await
             .expect("Failed to select data");
+        println!(
+            "id: {:?}, data: {:?}",
+            res.get::<U128, _>(0),
+            res.get::<Vec<U128>, _>(1)
+        );
 
-        let id = res.get::<U128, _>("id");
-        println!("id: {}", u128::from(id));
+        // clean
+        sqlx::query("DROP TABLE test;")
+            .execute(&pool)
+            .await
+            .unwrap();
+        sqlx::query("DROP EXTENSION uint128;")
+            .execute(&pool)
+            .await
+            .unwrap();
     }
 }

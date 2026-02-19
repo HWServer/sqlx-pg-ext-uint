@@ -3,10 +3,11 @@ use std::error::Error as StdError;
 use sqlx::{
     Decode, Encode, Postgres, Type,
     encode::IsNull,
-    postgres::{PgArgumentBuffer, PgTypeInfo, PgValueRef},
+    postgres::{PgArgumentBuffer, PgHasArrayType, PgTypeInfo, PgValueRef},
 };
 
 const PG_EXT_TYPE: &str = "uint4";
+const PG_ARRAY_EXT_TYPE: &str = "uint4[]";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct U32 {
@@ -70,5 +71,11 @@ impl<'r> Decode<'r, Postgres> for U32 {
 impl Type<Postgres> for U32 {
     fn type_info() -> PgTypeInfo {
         PgTypeInfo::with_name(PG_EXT_TYPE)
+    }
+}
+
+impl PgHasArrayType for U32 {
+    fn array_type_info() -> PgTypeInfo {
+        PgTypeInfo::with_name(PG_ARRAY_EXT_TYPE)
     }
 }

@@ -12,6 +12,7 @@
 - ✅ 支持所有无符号整数类型读取转换：
   ```rust
   u8, u16, u32, u64, u128, usize
+  Vec<u8>, Vec<u16>, Vec<u32>, Vec<u64>, Vec<u128>, Vec<usize>
   ```
 - ⚡ 自动处理数据库的 `uint128` 类型与 Rust 原生类型转换
 - 🛡️ 包含边界检查防止数据溢出
@@ -22,7 +23,7 @@
 ```toml
 [dependencies]
 sqlx = { version = "*", features = ["postgres"] }
-sqlx-pg-ext-uint = "0.1"
+sqlx-pg-ext-uint = "0.1.2"
 ```
 
 ### 代码示例
