@@ -1,8 +1,8 @@
 pub mod c_u128;
 pub mod c_u16;
 pub mod c_u32;
-/// 和 usize 一个样，只是整一个兼容而已（不必 as u64
 pub mod c_u64;
+pub mod c_u8;
 pub mod c_usize;
 
 /// test
@@ -15,11 +15,9 @@ pub mod test {
 
     #[tokio::test]
     pub async fn main() {
-        let pool = sqlx::PgPool::connect(
-            "postgres://root:TeamNovaCollaboration@192.168.2.254:65500/postgres",
-        )
-        .await
-        .unwrap();
+        let pool = sqlx::PgPool::connect("postgres://root:xxxxxx@xxxxxx:xxxxxx/postgres")
+            .await
+            .unwrap();
 
         // use c_u128
         // extension for uint128
